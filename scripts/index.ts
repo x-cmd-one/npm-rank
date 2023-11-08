@@ -89,6 +89,16 @@ console.log(`Fetched a total of ${packages.length} packages.`);
 
 await Deno.writeTextFile(outputFilePathRawJson, JSON.stringify(packages));
 
+function getFileSizeSync(filePath) {
+	try {
+	  const fileInfo = Deno.statSync(filePath);
+	  return fileInfo.size;
+	} catch (error) {
+	  console.error("Error getting file size:", error);
+	}
+  }
+
 console.log(
-	`Wrote ${packages.length} packages to ${outputFilePathRawJson}`,
+	`Wrote ${packages.length} packages to ${outputFilePathRawJson} sized at ${getFileSizeSync(outputFilePathRawJson)} bytes`,
 );
+  
