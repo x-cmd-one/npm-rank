@@ -2,7 +2,7 @@ import { join } from "https://deno.land/std/path/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
 import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
 
-const requestAmount = 40;
+const requestAmount = 400;
 const batchSize = 250;
 
 const buildDirectoryPath = "dist/";
