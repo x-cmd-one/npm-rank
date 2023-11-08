@@ -5,11 +5,11 @@ import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
 const requestAmount = 2;
 const batchSize = 250;
 
-const buildDirectoryPath = 'dist/'
-const currentFileDirectory = new URL('.', import.meta.url).pathname
-const outputFilenameRawJson = 'raw.json'
-const buildDirectory = join(currentFileDirectory, `../${buildDirectoryPath}`)
-const outputFilePathRawJson = join(buildDirectory, outputFilenameRawJson)
+const buildDirectoryPath = "dist/";
+const currentFileDirectory = new URL(".", import.meta.url).pathname;
+const outputFilenameRawJson = "raw.json";
+const buildDirectory = join(currentFileDirectory, `../${buildDirectoryPath}`);
+const outputFilePathRawJson = join(buildDirectory, outputFilenameRawJson);
 
 let completed = 0;
 const progress = Deno.isatty(Deno.stdout.rid)
@@ -91,14 +91,15 @@ await Deno.writeTextFile(outputFilePathRawJson, JSON.stringify(packages));
 
 function getFileSizeSync(filePath) {
 	try {
-	  const fileInfo = Deno.statSync(filePath);
-	  return fileInfo.size;
+		const fileInfo = Deno.statSync(filePath);
+		return fileInfo.size;
 	} catch (error) {
-	  console.error("Error getting file size:", error);
+		console.error("Error getting file size:", error);
 	}
-  }
+}
 
 console.log(
-	`Wrote ${packages.length} packages to ${outputFilePathRawJson} sized at ${getFileSizeSync(outputFilePathRawJson)} bytes`,
+	`Wrote ${packages.length} packages to ${outputFilePathRawJson} sized at ${
+		getFileSizeSync(outputFilePathRawJson)
+	} bytes`,
 );
-  
