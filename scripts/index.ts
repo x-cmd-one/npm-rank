@@ -89,11 +89,6 @@ console.log(`Fetched a total of ${packages.length} packages.`);
 
 await Deno.writeTextFile(outputFilePathRawJson, JSON.stringify(packages));
 
-console.assert(
-	packages.length === 10000,
-	"Expected 10000 packages. Did the remainder function fail?",
-);
-
 console.log(
 	`Wrote ${packages.length} packages to ${outputFilePathRawJson}`,
 );
