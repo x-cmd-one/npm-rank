@@ -7,7 +7,7 @@ const batchSize = 250;
 
 const buildDirectoryPath = "dist/";
 const currentFileDirectory = new URL(".", import.meta.url).pathname;
-const outputFilenameRawJson = "raw.json";
+const outputFilenameRawJson = "list-package-names.json";
 const buildDirectory = join(currentFileDirectory, `../${buildDirectoryPath}`);
 const outputFilePathRawJson = join(buildDirectory, outputFilenameRawJson);
 
