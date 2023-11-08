@@ -2,6 +2,7 @@ import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
 import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
 
 const requestAmount = 40;
+const batchedRequests = 250
 let completed = 0;
 
 const progress = Deno.isatty(Deno.stdout.rid)
@@ -19,7 +20,7 @@ function buildURL(index: number, max = 250) {
 }
 
 function pageURL(page: number) {
-	return buildURL(page * 250);
+	return buildURL(page * batchedRequests);
 }
 
 const PackageSchema = z.object({
@@ -55,7 +56,7 @@ async function getPage(page: number): Promise<Package[]> {
 
 	const { objects } = FetchSchema.parse(await request.json());
 
-	return objects.map((obj) => obj.package);
+	return objects.map((obj) => obj.package.name);
 }
 
 const packageRequests = await Promise.allSettled(
@@ -79,19 +80,7 @@ const packages: Package[] = packageRequests.flatMap((req, i) => {
 	return req.value.packages;
 });
 
-if (packages.length !== 10000) {
-	const fetchURL = buildURL(packages.length, 3);
-
-	console.log(`Fetching remaining ${10000 - packages.length} packages from ${fetchURL}...`);
-
-	const request = await fetch(fetchURL);
-
-	const { objects } = FetchSchema.parse(await request.json());
-
-	packages.push(...objects.map((obj) => obj.package));
-
-	console.log(`Fetched an extra ${objects.length} packages.`);
-}
+console.log(`Fetched a total of ${packages.length} packages.`);
 
 await Deno.writeTextFile("./raw.json", JSON.stringify(packages));
 
