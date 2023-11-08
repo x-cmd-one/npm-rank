@@ -1,4 +1,5 @@
 raw.json
 src/PACKAGES.md
 book
-dist/*
+dist/*.json
+dist/*.md
