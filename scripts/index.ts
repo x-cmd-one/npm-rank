@@ -1,10 +1,17 @@
+import { join } from "https://deno.land/std/path/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
 import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
 
-const requestAmount = 40;
-const batchedRequests = 250;
-let completed = 0;
+const requestAmount = 2;
+const batchSize = 250;
 
+const buildDirectoryPath = 'dist/'
+const currentFileDirectory = new URL('.', import.meta.url).pathname
+const outputFilenameRawJson = 'raw.json'
+const buildDirectory = join(currentFileDirectory, `../${buildDirectoryPath}`)
+const outputFilePathRawJson = join(buildDirectory, outputFilenameRawJson)
+
+let completed = 0;
 const progress = Deno.isatty(Deno.stdout.rid)
 	? new ProgressBar({
 		title: "Package progress:",
@@ -18,7 +25,7 @@ function buildURL(index: number, max = 250) {
 }
 
 function pageURL(page: number) {
-	return buildURL(page * batchedRequests);
+	return buildURL(page * batchSize);
 }
 
 const PackageSchema = z.object({
@@ -80,7 +87,7 @@ const packages: Package[] = packageRequests.flatMap((req, i) => {
 
 console.log(`Fetched a total of ${packages.length} packages.`);
 
-await Deno.writeTextFile("./raw.json", JSON.stringify(packages));
+await Deno.writeTextFile(outputFilePathRawJson, JSON.stringify(packages));
 
 console.assert(
 	packages.length === 10000,
@@ -88,5 +95,5 @@ console.assert(
 );
 
 console.log(
-	`Wrote ${packages.length} packages to ./raw.json`,
+	`Wrote ${packages.length} packages to ${outputFilePathRawJson}`,
 );
