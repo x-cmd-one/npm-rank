@@ -4,16 +4,6 @@ import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
 const requestAmount = 40;
 let completed = 0;
 
-// https://stackoverflow.com/a/6234804/7589775
-function escapeHTML(unsafe: string) {
-	return unsafe
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#039;");
-}
-
 const progress = Deno.isatty(Deno.stdout.rid)
 	? new ProgressBar({
 		title: "Package progress:",
@@ -105,39 +95,11 @@ if (packages.length !== 10000) {
 
 await Deno.writeTextFile("./raw.json", JSON.stringify(packages));
 
-function optionallyFormat(arg: string | undefined, label: string): string {
-	if (!arg) {
-		return "";
-	}
-
-	return ` ([${label}](${arg}))`;
-}
-
-const mdContent = `# Packages
-
-Ordered list of top 10000 NPM packages:
-
-${
-	packages.map((
-		{ name, links: { npm, homepage, repository }, description, version },
-		i,
-	) =>
-		`${i + 1}. [${name}](${npm})
-    - ${escapeHTML(description ?? "")}
-    - v${version} ${optionallyFormat(homepage, "homepage")}${
-			optionallyFormat(repository, "repository")
-		}`
-	).join("\n")
-}
-`;
-
-await Deno.writeTextFile("./src/PACKAGES.md", mdContent);
-
 console.assert(
 	packages.length === 10000,
 	"Expected 10000 packages. Did the remainder function fail?",
 );
 
 console.log(
-	`Wrote ${packages.length} packages to ./raw.json and ./src/PACKAGES.md.`,
-);
+	`Wrote ${packages.length} packages to ./raw.json`,
+)
