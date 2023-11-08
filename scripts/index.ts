@@ -2,7 +2,7 @@ import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
 import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
 
 const requestAmount = 40;
-const batchedRequests = 250
+const batchedRequests = 250;
 let completed = 0;
 
 const progress = Deno.isatty(Deno.stdout.rid)
@@ -14,9 +14,7 @@ const progress = Deno.isatty(Deno.stdout.rid)
 
 function buildURL(index: number, max = 250) {
 	// we can get a max of 250 at a time, sorting by popularity only, and using an empty search query (by abusing text filters and using a redundant boost-exact:false filter)
-	return `https://registry.npmjs.com/-/v1/search?size=${max}&popularity=1.0&quality=0.0&maintenance=0.0&text=boost-exact:false&from=${
-		index
-	}`;
+	return `https://registry.npmjs.com/-/v1/search?size=${max}&popularity=1.0&quality=0.0&maintenance=0.0&text=boost-exact:false&from=${index}`;
 }
 
 function pageURL(page: number) {
@@ -91,4 +89,4 @@ console.assert(
 
 console.log(
 	`Wrote ${packages.length} packages to ./raw.json`,
-)
+);
