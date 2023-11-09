@@ -7,4 +7,3 @@ by
 The raw data is available in
 [releases](https://github.com/lirantal/npm-rank/releases) as
 [json](https://github.com/lirantal/npm-rank/releases/download/latest/list-package-names.json).
-

@@ -1,9 +1,11 @@
 import { join } from "https://deno.land/std/path/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
-import ProgressBar from "https://deno.land/x/progress@v1.3.4/mod.ts";
+import ProgressBar from "https://deno.land/x/progress@v1.3.9/mod.ts";
+import { BatchQueue } from "https://deno.land/x/batch_queue@v0.0.1/mod.ts";
 
 const requestAmount = 40;
 const batchSize = 250;
+const promiseConcurrency = 12;
 
 const buildDirectoryPath = "dist/";
 const currentFileDirectory = new URL(".", import.meta.url).pathname;
@@ -64,8 +66,16 @@ async function getPage(page: number): Promise<Package[]> {
 	return objects.map((obj) => obj.package.name);
 }
 
-const packageRequests = await Promise.allSettled(
-	Array.from({ length: requestAmount }).map(async (_, i) => {
+// handy sleep timer
+const timeout = (time) =>
+	new Promise((resolve) => setTimeout(() => resolve(true), time));
+
+const queuedRequests = new BatchQueue(promiseConcurrency);
+const queuedPackageData = new BatchQueue(1);
+let packageData = [];
+
+const requestsFunctions = Array.from({ length: requestAmount }).map((_, i) => {
+	return async () => {
 		const packages = await getPage(i);
 		completed++;
 		if (progress) {
@@ -73,17 +83,27 @@ const packageRequests = await Promise.allSettled(
 		} else {
 			console.log(`Completed ${completed} of ${requestAmount} requests.`);
 		}
-		return ({ page: i, packages });
-	}),
-);
 
-const packages: Package[] = packageRequests.flatMap((req, i) => {
-	if (req.status === "rejected") {
-		console.error(`Failed to fetch page ${i}: ${req.reason}.`);
-		Deno.exit(1);
-	}
-	return req.value.packages;
+		const queuedFunction = async function () {
+			await packageData.push(...packages);
+		};
+
+		queuedPackageData.queue(queuedFunction);
+
+		return true;
+	};
 });
+
+queuedRequests.queue(...requestsFunctions);
+
+await queuedRequests.run();
+await queuedRequests.allSettled;
+await timeout(500);
+
+console.log(`Completed all queued requests tasks: ${queuedRequests.running}`);
+
+await queuedPackageData.run();
+const packages = packageData;
 
 console.log(`Fetched a total of ${packages.length} packages.`);
 
