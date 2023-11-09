@@ -3,9 +3,9 @@ import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
 import ProgressBar from "https://deno.land/x/progress@v1.3.9/mod.ts";
 import { BatchQueue } from "https://deno.land/x/batch_queue@v0.0.1/mod.ts";
 
-const requestAmount = 40;
+const requestAmount = 200;
 const batchSize = 250;
-const promiseConcurrency = 12;
+const promiseConcurrency = 4;
 
 const buildDirectoryPath = "dist/";
 const currentFileDirectory = new URL(".", import.meta.url).pathname;
