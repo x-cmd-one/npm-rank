@@ -1,4 +1,4 @@
-name: Deno
+name: "Build: Top 50k packages on npmjs"
 
 on:
   workflow_dispatch:
