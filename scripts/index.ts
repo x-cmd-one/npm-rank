@@ -85,7 +85,10 @@ const requestsFunctions = Array.from({ length: requestAmount }).map((_, i) => {
 		}
 
 		const queuedFunction = async function () {
-			await packageData.push(...packages);
+			await packageData.push({
+				page: i,
+				packages
+			});
 		};
 
 		queuedPackageData.queue(queuedFunction);
@@ -103,7 +106,20 @@ await timeout(500);
 console.log(`Completed all queued requests tasks: ${queuedRequests.running}`);
 
 await queuedPackageData.run();
-const packages = packageData;
+await queuedPackageData.allSettled;
+await timeout(500);
+
+function getSortedPackagesByPopularityDesc(packages) {
+	const packagesToSort = Array.from(packages);
+
+	packagesToSort.sort((a, b) => {
+		return (a.page - b.page)
+	})
+
+	return packagesToSort.flatMap((packagesPage) => packagesPage.packages);
+}
+
+const packages = getSortedPackagesByPopularityDesc(packageData);
 
 console.log(`Fetched a total of ${packages.length} packages.`);
 
