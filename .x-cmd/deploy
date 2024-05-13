@@ -1,5 +1,5 @@
 # shellcheck shell=dash
 
 (
-	x gh wf run -r x-cmd-one/npm-rank .id=61278671
+	x gh wf run -r x-cmd-one/npm-rank .id=97866777
 )

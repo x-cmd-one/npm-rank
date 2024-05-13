@@ -1,4 +1,4 @@
-name: "Build: Top 50k packages on npmjs"
+name: "Build: Top packages on npmjs"
 
 on:
   workflow_dispatch:
