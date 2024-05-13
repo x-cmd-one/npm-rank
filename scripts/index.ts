@@ -3,8 +3,14 @@ import { z } from "https://deno.land/x/zod@v3.20.0/mod.ts";
 import ProgressBar from "https://deno.land/x/progress@v1.3.9/mod.ts";
 import { BatchQueue } from "https://deno.land/x/batch_queue@v0.0.1/mod.ts";
 
-const requestAmount = 200;
-const batchSize = 250;
+const batchSize = 250; 
+/**
+ * @usage `deno task run 10k`
+ * default: 40 * 250 = 10k
+ */
+const requestAmount = Deno.args[0] 
+	? (Number.parseInt(`${Deno.args[0].replace('k', '000')}`, 10) / batchSize)
+	: 40;
 const promiseConcurrency = 4;
 
 const buildDirectoryPath = "dist/";
