@@ -1,6 +1,6 @@
 {
 	"tasks": {
-		"run": "deno run -A scripts/index.ts 20k",
+		"run": "deno run -A scripts/index.ts 100k",
 		"fmt": "deno fmt --options-use-tabs"
 	}
 }
